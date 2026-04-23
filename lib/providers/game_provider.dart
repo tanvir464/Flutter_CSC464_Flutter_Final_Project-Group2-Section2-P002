@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../models/game_state.dart';
+import '../models/match_record.dart';
 import '../services/firestore_service.dart';
 
 const List<List<int>> _kWinLines = [
@@ -124,5 +125,24 @@ class GameProvider extends ChangeNotifier {
 
   bool _checkTie() => board.every((cell) => cell.isNotEmpty);
 
-  Future<void> _saveMatch() async {}
+  Future<void> _saveMatch() async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      final record = MatchRecord(
+        id: '',
+        player1: player1Name,
+        player2: player2Name,
+        winner: winner!,
+        board: List<String>.from(board),
+        createdAt: DateTime.now(),
+      );
+      await _firestoreService.saveMatch(record);
+    } catch (_) {
+      // silently ignore save errors
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
 }
