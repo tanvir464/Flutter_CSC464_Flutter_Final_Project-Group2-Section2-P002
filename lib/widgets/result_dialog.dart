@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_provider.dart';
+import '../screens/name_entry_screen.dart';
 import '../theme/app_theme.dart';
 
 class ResultDialog extends StatelessWidget {
   const ResultDialog({super.key});
 
   static void show(BuildContext context) {
-    showDialog(
+    showGeneralDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => ChangeNotifierProvider.value(
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 350),
+      pageBuilder: (ctx, _, _) => ChangeNotifierProvider.value(
         value: context.read<GameProvider>(),
         child: const ResultDialog(),
       ),
+      transitionBuilder: (ctx, animation, _, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack,
+        );
+        return ScaleTransition(
+          scale: Tween<double>(begin: 0.7, end: 1.0).animate(curved),
+          child: FadeTransition(opacity: curved, child: child),
+        );
+      },
     );
   }
 
@@ -40,18 +53,25 @@ class ResultDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Trophy / tie icon
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.15),
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(
-                  isTie ? '🤝' : '🏆',
-                  style: const TextStyle(fontSize: 36),
+            // Animated icon
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.elasticOut,
+              builder: (_, v, child) =>
+                  Transform.scale(scale: v, child: child),
+              child: Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(
+                    isTie ? '🤝' : '🏆',
+                    style: const TextStyle(fontSize: 36),
+                  ),
                 ),
               ),
             ),
@@ -91,7 +111,10 @@ class ResultDialog extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
                   context.read<GameProvider>().resetAll();
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                        builder: (_) => const NameEntryScreen()),
+                  );
                 },
                 child: const Text('Change Names'),
               ),

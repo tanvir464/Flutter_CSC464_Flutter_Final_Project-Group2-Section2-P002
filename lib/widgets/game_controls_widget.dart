@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_provider.dart';
+import '../screens/name_entry_screen.dart';
 import '../theme/app_theme.dart';
 
 class GameControlsWidget extends StatelessWidget {
@@ -29,7 +30,10 @@ class GameControlsWidget extends StatelessWidget {
             label: 'Change Names',
             onTap: () {
               context.read<GameProvider>().resetAll();
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                    builder: (_) => const NameEntryScreen()),
+              );
             },
           ),
         ],
