@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_provider.dart';
+import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 import 'game_screen.dart';
+import 'history_screen.dart';
 
 class NameEntryScreen extends StatefulWidget {
   const NameEntryScreen({super.key});
@@ -35,9 +37,68 @@ class _NameEntryScreenState extends State<NameEntryScreen> {
     );
   }
 
+  Future<void> _confirmSignOut() async {
+    final shouldSignOut = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppTheme.divider),
+        ),
+        title: const Text(
+          'Sign out?',
+          style: TextStyle(color: AppTheme.textPrimary),
+        ),
+        content: const Text(
+          'You can sign back in anytime to see your match history.',
+          style: TextStyle(color: AppTheme.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel',
+                style: TextStyle(color: AppTheme.textSecondary)),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Sign out',
+                style: TextStyle(color: AppTheme.primary)),
+          ),
+        ],
+      ),
+    );
+    if (shouldSignOut == true && mounted) {
+      await context.read<AuthService>().signOut();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final user = context.read<AuthService>().currentUser;
+    final greeting = user?.displayName?.trim().isNotEmpty == true
+        ? 'Welcome, ${user!.displayName!.trim()}'
+        : 'Two players · One device';
+
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tic Tac Toe'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            tooltip: 'Match History',
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const HistoryScreen()),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            tooltip: 'Sign out',
+            onPressed: _confirmSignOut,
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -79,9 +140,9 @@ class _NameEntryScreenState extends State<NameEntryScreen> {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  const Text(
-                    'Two players · One device',
-                    style: TextStyle(
+                  Text(
+                    greeting,
+                    style: const TextStyle(
                       fontSize: 14,
                       color: AppTheme.textSecondary,
                     ),
