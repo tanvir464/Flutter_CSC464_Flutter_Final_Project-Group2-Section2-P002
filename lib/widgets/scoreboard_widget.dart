@@ -26,26 +26,36 @@ class ScoreboardWidget extends StatelessWidget {
         color: AppTheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.divider),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          _ScoreColumn(label: p.p1, count: p.x, color: AppTheme.xColor),
+          _AnimatedScoreColumn(
+              label: p.p1, count: p.x, color: AppTheme.xColor),
           _Divider(),
-          _ScoreColumn(label: 'Ties', count: p.t, color: AppTheme.tieColor),
+          _AnimatedScoreColumn(
+              label: 'Ties', count: p.t, color: AppTheme.tieColor),
           _Divider(),
-          _ScoreColumn(label: p.p2, count: p.o, color: AppTheme.oColor),
+          _AnimatedScoreColumn(
+              label: p.p2, count: p.o, color: AppTheme.oColor),
         ],
       ),
     );
   }
 }
 
-class _ScoreColumn extends StatelessWidget {
+class _AnimatedScoreColumn extends StatelessWidget {
   final String label;
   final int count;
   final Color color;
 
-  const _ScoreColumn({
+  const _AnimatedScoreColumn({
     required this.label,
     required this.count,
     required this.color,
@@ -57,12 +67,17 @@ class _ScoreColumn extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            '$count',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: color,
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: count.toDouble()),
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeOutCubic,
+            builder: (_, value, _) => Text(
+              '${value.round()}',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
             ),
           ),
           const SizedBox(height: 4),

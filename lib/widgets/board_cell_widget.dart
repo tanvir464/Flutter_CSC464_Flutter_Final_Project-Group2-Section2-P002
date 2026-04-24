@@ -17,10 +17,11 @@ class BoardCellWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.read<GameProvider>().makeMove(index),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOut,
         decoration: BoxDecoration(
           color: isWinningCell
-              ? AppTheme.winnerColor(provider.winner ?? '').withValues(alpha: 0.2)
+              ? AppTheme.winnerColor(provider.winner ?? '').withValues(alpha: 0.22)
               : AppTheme.cellColor(value),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
@@ -29,12 +30,33 @@ class BoardCellWidget extends StatelessWidget {
                 : AppTheme.divider,
             width: isWinningCell ? 2.0 : 1.0,
           ),
+          boxShadow: isWinningCell
+              ? [
+                  BoxShadow(
+                    color: AppTheme.winnerColor(provider.winner ?? '')
+                        .withValues(alpha: 0.35),
+                    blurRadius: 12,
+                    spreadRadius: 1,
+                  ),
+                ]
+              : null,
         ),
         child: Center(
-          child: Text(
-            value,
-            style: AppTheme.cellTextStyle.copyWith(
-              color: AppTheme.cellTextColor(value),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 220),
+            transitionBuilder: (child, animation) => ScaleTransition(
+              scale: CurvedAnimation(
+                parent: animation,
+                curve: Curves.elasticOut,
+              ),
+              child: child,
+            ),
+            child: Text(
+              value,
+              key: ValueKey(value),
+              style: AppTheme.cellTextStyle.copyWith(
+                color: AppTheme.cellTextColor(value),
+              ),
             ),
           ),
         ),

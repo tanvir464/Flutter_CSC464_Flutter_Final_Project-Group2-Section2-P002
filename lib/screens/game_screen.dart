@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/game_state.dart';
 import '../providers/game_provider.dart';
+import '../theme/app_theme.dart';
 import '../widgets/board_widget.dart';
 import '../widgets/game_controls_widget.dart';
 import '../widgets/player_turn_banner.dart';
@@ -21,7 +22,8 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final status = context.select<GameProvider, GameStatus>((p) => p.status);
+    final provider = context.watch<GameProvider>();
+    final status = provider.status;
 
     if ((status == GameStatus.won || status == GameStatus.tied) && !_dialogShown) {
       _dialogShown = true;
@@ -36,16 +38,38 @@ class _GameScreenState extends State<GameScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Tic Tac Toe'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history),
-            tooltip: 'Match History',
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const HistoryScreen()),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF1A1A2E), Color(0xFF16213E)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
+        ),
+        title: const Text('Tic Tac Toe'),
+        actions: [
+          if (provider.isLoading)
+            const Padding(
+              padding: EdgeInsets.all(14),
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppTheme.primary,
+                ),
+              ),
+            )
+          else
+            IconButton(
+              icon: const Icon(Icons.history),
+              tooltip: 'Match History',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HistoryScreen()),
+              ),
+            ),
         ],
       ),
       body: SafeArea(
@@ -55,7 +79,20 @@ class _GameScreenState extends State<GameScreen> {
             const ScoreboardWidget(),
             const SizedBox(height: 16),
             const PlayerTurnBanner(),
-            const BoardWidget(),
+            Container(
+              margin: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primary.withValues(alpha: 0.08),
+                    blurRadius: 24,
+                    spreadRadius: 4,
+                  ),
+                ],
+              ),
+              child: const BoardWidget(),
+            ),
             const Spacer(),
             const GameControlsWidget(),
             const SizedBox(height: 20),

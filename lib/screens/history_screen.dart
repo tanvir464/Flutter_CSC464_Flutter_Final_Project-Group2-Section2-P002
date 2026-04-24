@@ -47,12 +47,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             }
 
             if (snapshot.hasError) {
-              return const Center(
-                child: Text(
-                  'Failed to load history',
-                  style: TextStyle(color: AppTheme.textSecondary),
-                ),
-              );
+              return _ErrorState(onRetry: () => setState(() => _load()));
             }
 
             final matches = snapshot.data ?? [];
@@ -92,6 +87,34 @@ class _EmptyState extends StatelessWidget {
           Text(
             'Play a game to see your history here',
             style: TextStyle(fontSize: 13, color: AppTheme.textSecondary),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorState extends StatelessWidget {
+  final VoidCallback onRetry;
+  const _ErrorState({required this.onRetry});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.cloud_off, size: 64, color: AppTheme.textSecondary),
+          const SizedBox(height: 16),
+          const Text(
+            'Could not load history',
+            style: TextStyle(fontSize: 18, color: AppTheme.textSecondary),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: onRetry,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Retry'),
           ),
         ],
       ),
