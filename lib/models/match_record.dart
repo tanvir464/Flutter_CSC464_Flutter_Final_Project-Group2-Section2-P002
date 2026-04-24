@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MatchRecord {
   final String id;
+  final String userId;
   final String player1;
   final String player2;
   final String winner; // "X", "O", or "Tie"
@@ -10,6 +11,7 @@ class MatchRecord {
 
   MatchRecord({
     required this.id,
+    required this.userId,
     required this.player1,
     required this.player2,
     required this.winner,
@@ -21,6 +23,7 @@ class MatchRecord {
     final data = doc.data() as Map<String, dynamic>;
     return MatchRecord(
       id: doc.id,
+      userId: (data['userId'] as String?) ?? '',
       player1: data['player1'] as String,
       player2: data['player2'] as String,
       winner: data['winner'] as String,
@@ -30,6 +33,7 @@ class MatchRecord {
   }
 
   Map<String, dynamic> toMap() => {
+        'userId': userId,
         'player1': player1,
         'player2': player2,
         'winner': winner,

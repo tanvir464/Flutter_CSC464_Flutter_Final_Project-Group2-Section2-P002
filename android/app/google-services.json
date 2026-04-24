@@ -12,7 +12,20 @@
           "package_name": "com.example.tic_tac_toe"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "773773386970-turef7dd5nrsv0ulcss6ebfmjrups272.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tic_tac_toe",
+            "certificate_hash": "a3a449247f999b9bc490682c31d4a39434da7def"
+          }
+        },
+        {
+          "client_id": "773773386970-juhgn6g4gnb7spmkb0jh305e87buhnkn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBhA3TzplJWQVEUM7VG-M0yMv1PbOFFzmI"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "773773386970-juhgn6g4gnb7spmkb0jh305e87buhnkn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "773773386970-5psmrmuf5oul1pc9epl38sv9fmkcdqel.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ticTacToe"
+              }
+            }
+          ]
         }
       }
     }
