@@ -131,6 +131,7 @@ class GameProvider extends ChangeNotifier {
     try {
       final record = MatchRecord(
         id: '',
+        userId: '',
         player1: player1Name,
         player2: player2Name,
         winner: winner!,

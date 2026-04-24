@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/game_provider.dart';
-import 'screens/name_entry_screen.dart';
+import 'screens/auth_wrapper.dart';
+import 'services/auth_service.dart';
 import 'services/firestore_service.dart';
 import 'theme/app_theme.dart';
 
@@ -22,6 +23,9 @@ class TicTacToeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<AuthService>(
+          create: (_) => AuthService(),
+        ),
         Provider<FirestoreService>(
           create: (_) => FirestoreService(),
         ),
@@ -33,7 +37,7 @@ class TicTacToeApp extends StatelessWidget {
         title: 'Tic Tac Toe',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.themeData,
-        home: const NameEntryScreen(),
+        home: const AuthWrapper(),
       ),
     );
   }
